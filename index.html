@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Inktober Quick: 30-45 minute prompts</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;1,9..144,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0a09;--panel:#151311;--panel2:#1d1a17;--line:#2c2723;--ink:#ece6dc;--mute:#9a9087;--faint:#645c55;--accent:#e0572e;--accent2:#f2a65a;--r:14px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:radial-gradient(ellipse at 50% -10%,#241510 0%,var(--bg) 55%);min-height:100vh;color:var(--ink);font-family:Inter,system-ui,sans-serif;font-size:15px;line-height:1.5}
+.wrap{max-width:1080px;margin:0 auto;padding:40px 20px 80px}
+header{text-align:center;margin-bottom:32px}
+.kicker{letter-spacing:.3em;text-transform:uppercase;font-size:12px;color:var(--accent2)}
+h1{font-family:Fraunces,serif;font-size:clamp(34px,6vw,58px);font-weight:700;line-height:1.05;margin:8px 0}
+h1 em{color:var(--accent);font-style:italic;font-weight:400}
+.sub{color:var(--mute);max-width:560px;margin:0 auto}
+.days{display:grid;grid-template-columns:repeat(auto-fill,minmax(98px,1fr));gap:6px;margin:28px 0}
+.day{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 10px;cursor:pointer;text-align:left;color:var(--ink);font:inherit;transition:.15s}
+.day:hover{border-color:var(--faint)}
+.day small{display:block;color:var(--faint);font-size:11px}
+.day span{font-weight:600;font-size:13px;text-transform:uppercase;letter-spacing:.04em}
+.day.on{background:var(--accent);border-color:var(--accent);color:#fff}.day.on small{color:#ffd9c9}
+.day.today{box-shadow:0 0 0 1px var(--accent2) inset}
+.card{background:linear-gradient(160deg,#1b1714,#110f0d);border:1px solid var(--line);border-radius:22px;padding:36px;position:relative;overflow:hidden}
+.card:before{content:"";position:absolute;right:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,#e0572e33,transparent 70%)}
+.daylabel{color:var(--accent2);font-size:13px;letter-spacing:.2em;text-transform:uppercase}
+.prompt{font-family:Fraunces,serif;font-size:clamp(22px,3.2vw,34px);line-height:1.3;margin:12px 0 22px;min-height:3em;transition:opacity .25s}
+.prompt b{color:var(--accent);font-weight:700}
+.prompt i{color:var(--accent2)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+.chip{display:flex;align-items:center;gap:8px;background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:6px 8px 6px 14px;font-size:13px}
+.chip .k{color:var(--faint);font-size:11px;text-transform:uppercase;letter-spacing:.08em}
+.chip button{background:none;border:0;color:var(--mute);cursor:pointer;width:26px;height:26px;border-radius:50%;font-size:13px}
+.chip button:hover{background:var(--line);color:var(--ink)}
+.chip.locked{border-color:var(--accent2)}.chip.locked .lk{color:var(--accent2)}
+.actions{display:flex;flex-wrap:wrap;gap:10px}
+.btn{font:600 14px Inter;border-radius:10px;padding:12px 20px;cursor:pointer;border:1px solid var(--line);background:var(--panel2);color:var(--ink);transition:.15s}
+.btn:hover{border-color:var(--faint)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}.btn.primary:hover{background:#ef6a40}
+.tabs{display:flex;gap:4px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:4px;width:fit-content;margin:36px 0 16px}
+.tab{background:none;border:0;color:var(--mute);font:600 14px Inter;padding:9px 18px;border-radius:9px;cursor:pointer}
+.tab.on{background:var(--panel2);color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.field{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:14px}
+.field label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--mute);margin-bottom:8px}
+select{width:100%;background:var(--panel2);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:10px;font:inherit;appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--mute) 50%),linear-gradient(135deg,var(--mute) 50%,transparent 50%);background-position:calc(100% - 16px) 50%,calc(100% - 11px) 50%;background-size:5px 5px;background-repeat:no-repeat}
+select:focus{outline:1px solid var(--accent)}
+.hidden{display:none}
+.note{color:var(--faint);font-size:13px;margin-top:10px}
+.saved{margin-top:36px}
+.saved h2{font-family:Fraunces,serif;font-size:22px;margin-bottom:12px}
+.item{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:8px;display:flex;gap:12px;justify-content:space-between;align-items:start}
+.item p{font-family:Fraunces,serif;font-size:16px}
+.item small{color:var(--accent2);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+.item button{background:none;border:0;color:var(--faint);cursor:pointer;font-size:16px}
+.empty{color:var(--faint);font-size:14px}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:10px;font-weight:600;transition:.3s}
+.toast.show{transform:translateX(-50%) translateY(0)}
+footer{text-align:center;color:var(--faint);font-size:12px;margin-top:48px}
+.topbar{display:flex;justify-content:center;gap:10px;margin-top:20px;flex-wrap:wrap}
+.ghstat{font-size:12px;color:var(--accent2);align-self:center}
+.planhead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin:44px 0 16px}
+.planhead h2,.saved h2{font-family:Fraunces,serif;font-size:24px}
+.planhead .actions .btn{padding:9px 14px;font-size:13px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.cal .dow{font-size:11px;color:var(--faint);text-transform:uppercase;letter-spacing:.1em;padding:4px}
+.cell{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px;min-height:120px;cursor:pointer;font-size:11.5px;color:var(--mute);line-height:1.35}
+.cell:hover{border-color:var(--faint)}.cell.on{border-color:var(--accent)}
+.cell .n{display:flex;justify-content:space-between;color:var(--ink);font-weight:600;font-size:12px;margin-bottom:4px}
+.cell .n b{color:var(--accent2);text-transform:uppercase;font-size:11px;letter-spacing:.05em}
+.cell.blank{background:none;border:0;cursor:default}
+.plist .item{cursor:pointer}.plist .item.on{border-color:var(--accent)}
+.inp{width:100%;background:var(--panel2);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:10px;font:13px monospace}
+@media(max-width:760px){.cal{grid-template-columns:repeat(2,1fr)}.cal .dow,.cal .blank{display:none}}
+#printarea{display:none;font-family:Georgia,serif;color:#000}
+#printarea h1{font-size:26px;margin-bottom:12px;color:#000}
+#printarea .pr{border-bottom:1px solid #ccc;padding:6px 0;font-size:12px;break-inside:avoid}
+#printarea .pr strong{display:inline-block;width:150px}
+@media print{body{background:#fff;color:#000}.wrap>*:not(#printarea){display:none!important}#printarea{display:block!important}}
+.gear{position:fixed;top:16px;right:16px;z-index:20;width:44px;height:44px;border-radius:50%;background:var(--panel);border:1px solid var(--line);color:var(--mute);font-size:20px;cursor:pointer}
+.gear:hover{color:var(--ink);border-color:var(--faint)}
+.dot{position:absolute;top:8px;right:8px;width:8px;height:8px;border-radius:50%;background:transparent}.dot.on{background:#5fbf7a}
+.scrim{position:fixed;inset:0;background:#0008;opacity:0;pointer-events:none;transition:.25s;z-index:29}.scrim.open{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;height:100%;width:min(420px,92vw);background:var(--bg);border-left:1px solid var(--line);padding:24px;overflow:auto;transform:translateX(100%);transition:transform .3s ease;z-index:30}
+.drawer.open{transform:none}.dhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.dhead h2{font-family:Fraunces,serif;font-size:22px}.x{background:none;border:0;color:var(--mute);font-size:28px;cursor:pointer}
+@media(max-width:600px){.card{padding:24px}}
+</style></head><body><div class="wrap"><button class="gear" id="gear" title="Sync settings">&#9881;<span class="dot" id="dot"></span></button>
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer"><div class="dhead"><h2>Sync and backup</h2><button class="x" id="dclose">&times;</button></div>
+<p class="ghstat" id="ghstat" style="margin-bottom:12px"></p><span id="gh" hidden></span><span id="sync" hidden></span>
+<div id="ghbox" class="field" style="margin-top:14px"><label>GitHub sync</label>
+<p class="note" style="margin:0 0 8px">Paste a GitHub classic token with only the "gist" permission (GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)). It stays in this browser only. Use the same token on each device; changes then save automatically.</p>
+<input id="ghtok" class="inp" type="password" placeholder="ghp_...">
+<div class="actions" style="margin-top:10px"><button class="btn primary" id="ghconnect">Connect</button><button class="btn" id="ghnow">Sync now</button><button class="btn" id="ghoff">Disconnect this device</button></div></div>
+<div id="syncbox" class="field" style="margin-top:14px"><label>Sync code (manual backup)</label>
+<textarea id="synccode" class="inp" rows="3"></textarea>
+<div class="actions" style="margin-top:10px"><button class="btn" id="copycode">Copy code</button><button class="btn" id="copylink">Copy sync link</button><button class="btn" id="loadcode">Load pasted code</button></div></div>
+</aside>
+
+<header><div class="kicker">30 to 45 minute sketches</div><h1>Ink<em>tober</em> Quick</h1><p class="sub">Simple prompts you can finish in 30 to 45 minutes. One word, one creature, one place, one mood of light, and a reminder to keep it simple.</p></header>
+<div class="days" id="days"></div>
+<section class="card">
+ <div class="daylabel" id="daylabel"></div>
+ <p class="prompt" id="prompt"></p>
+ <div class="chips" id="chips"></div>
+ <div class="actions">
+  <button class="btn primary" id="roll">Generate new prompt</button>
+  <button class="btn" id="copy">Copy</button>
+  <button class="btn" id="save">Save to sketchbook</button>
+  <button class="btn" id="randday">Surprise day</button>
+ </div>
+</section>
+<div class="tabs"><button class="tab on" data-t="auto">Auto</button><button class="tab" data-t="manual">Pick each part</button></div>
+<div id="auto"><p class="note">Lock any part you like with the lock icon on its chip, then generate again to reroll everything else. Use the reroll icon to change just that part.</p></div>
+<div id="manual" class="hidden"><div class="grid" id="pickers"></div><p class="note">Every change updates the prompt above. Choose "Random" to let fate decide that part.</p></div>
+<section><div class="planhead"><h2>Plan ahead: all 31 days</h2><div class="actions">
+<div class="tabs" style="margin:0"><button class="tab vt on" data-v="grid">Calendar</button><button class="tab vt" data-v="list">List</button></div>
+<button class="btn" id="rollall">Reroll unlocked days</button><button class="btn" id="copyall">Copy all</button><button class="btn" id="print">Print sheet</button><button class="btn" id="reset">Reset</button></div></div>
+<p class="note" style="margin:-6px 0 14px">Click any day to open and fine-tune it above. Days you have generated or edited are kept when you reroll the month.</p>
+<div id="plan"></div></section>
+<section class="saved"><h2>Sketchbook</h2><div id="list"></div></section>
+<div id="printarea"></div><footer>Prompt words from the official Inktober 2026 list. Quick version, made for finishing.</footer>
+</div><div class="toast" id="toast"></div>
+<script>
+const WORDS=["Apple","Relic","Miniature","Cactus","Smack","Ogre","Panic","Stinky","Ram","Mystical","Rescue","Toss","Flimsy","Lady","Hooray","Gangly","Contraption","Flightless","Confused","Lounge","Hero","Beacon","Dapper","Bake","Fracture","Zip","Dumb","Trophy","Tusk","Cookie","Flex"];
+const CAT={
+creature:{label:"Creature",items:["a cat","a dog","an owl","a frog","a fish","a crow","a snail","a mouse","a rabbit","a turtle","a bird","a bug","a bat","a pig","a duck","a bear"]},
+place:{label:"Place",items:["in the desert","in space","in a forest","on a rooftop","at the beach","in a kitchen","under the sea","on a hill","in a cave","in the snow","in a garden","on the moon"]},
+light:{label:"Light or weather",items:["long shadows","at night","in the rain","on a sunny day","in the fog","at sunset","in the wind","by candlelight"]},
+tech:{label:"Keep it simple",items:["bold outlines","one pen only","simple shapes","lots of black fill","clean lines, little detail","a quick loose sketch","three values: white, gray, black","a small drawing with white space"]}
+};
+const KEYS=Object.keys(CAT);
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const now=new Date();const todayIdx=now.getMonth()===9?now.getDate()-1:null;
+let day=todayIdx??0, locks={}, manual={}, view="grid", muted=false;
+const LS=k=>{try{return JSON.parse(localStorage.getItem('inkquick-'+k))}catch(e){return null}};
+const RAW=(k,v)=>{try{localStorage.setItem('inkquick-'+k,JSON.stringify(v))}catch(e){}};
+const SV=(k,v)=>{RAW(k,v);if(!muted&&['plan','kept','saved'].includes(k)){RAW('localupd',Date.now());queue()}};
+const fresh=()=>{const o={};KEYS.forEach(k=>o[k]=pick(CAT[k].items));return o};
+let plan=LS('plan')||WORDS.map(fresh), kept=LS('kept')||{}, saved=LS('saved')||[];
+let state=plan[day];
+KEYS.forEach(k=>manual[k]="random");
+const $=id=>document.getElementById(id);
+function renderDays(){ $("days").innerHTML=WORDS.map((w,i)=>`<button class="day ${i===day?'on':''} ${i===todayIdx?'today':''}" data-i="${i}"><small>Day ${i+1}</small><span>${w}</span></button>`).join("");
+ document.querySelectorAll(".day").forEach(b=>b.onclick=()=>{day=+b.dataset.i;renderDays();render();});}
+function roll(only){ state=plan[day]; kept[day]=true; KEYS.forEach(k=>{ if(only&&k!==only)return; if(!only&&locks[k])return; state[k]=manual[k]!=="random"&&!only?manual[k]:pick(CAT[k].items);}); render(); }
+function sentence(d=day){const p=plan[d],w=WORDS[d];return `<b>${w.toUpperCase()}</b> with ${p.creature} ${p.place}, ${p.light}. <i>Keep it simple:</i> ${p.tech}.`;}
+function plain(d=day){return `Day ${d+1} (Oct ${d+1}): `+sentence(d).replace(/<[^>]+>/g,"");}
+function render(){ state=plan[day]; SV('plan',plan);SV('kept',kept); renderPlan(); $("daylabel").textContent=`Day ${day+1} of 31 · ${WORDS[day]}`; const p=$("prompt");p.style.opacity=0;setTimeout(()=>{p.innerHTML=sentence();p.style.opacity=1},120);
+ $("chips").innerHTML=KEYS.map(k=>`<div class="chip ${locks[k]?'locked':''}"><span class="k">${CAT[k].label}</span>${state[k]}<button class="lk" data-k="${k}" title="Lock">${locks[k]?'&#128274;':'&#128275;'}</button><button class="rr" data-k="${k}" title="Reroll">&#8635;</button></div>`).join("");
+ document.querySelectorAll(".lk").forEach(b=>b.onclick=()=>{locks[b.dataset.k]=!locks[b.dataset.k];render();});
+ document.querySelectorAll(".rr").forEach(b=>b.onclick=()=>roll(b.dataset.k));
+ KEYS.forEach(k=>{const s=$("sel-"+k); if(s&&manual[k]!=="random")s.value=state[k];});}
+function pickers(){ $("pickers").innerHTML=`<div class="field"><label>Day prompt</label><select id="sel-day">${WORDS.map((w,i)=>`<option value="${i}">${i+1}. ${w}</option>`).join("")}</select></div>`+
+ KEYS.map(k=>`<div class="field"><label>${CAT[k].label}</label><select id="sel-${k}"><option value="random">Random</option>${CAT[k].items.map(v=>`<option>${v}</option>`).join("")}</select></div>`).join("");
+ $("sel-day").onchange=e=>{day=+e.target.value;renderDays();render();};
+ KEYS.forEach(k=>$("sel-"+k).onchange=e=>{manual[k]=e.target.value;kept[day]=true;state[k]=e.target.value==="random"?pick(CAT[k].items):e.target.value;locks[k]=e.target.value!=="random";render();});}
+document.querySelectorAll(".tab:not(.vt)").forEach(t=>t.onclick=()=>{document.querySelectorAll(".tab:not(.vt)").forEach(x=>x.classList.toggle("on",x===t));$("auto").classList.toggle("hidden",t.dataset.t!=="auto");$("manual").classList.toggle("hidden",t.dataset.t!=="manual");$("sel-day").value=day;});
+function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1600);}
+$("roll").onclick=()=>roll();
+$("randday").onclick=()=>{day=Math.floor(Math.random()*31);renderDays();roll();};
+$("copy").onclick=()=>{navigator.clipboard?.writeText(plain());toast("Copied to clipboard");};
+
+$("save").onclick=()=>{saved.unshift({d:day,t:sentence()});renderList();SV("saved",saved);toast("Saved to sketchbook");};
+function renderList(){ $("list").innerHTML=saved.length?saved.map((s,i)=>`<div class="item"><div><small>Day ${s.d+1} · ${WORDS[s.d]}</small><p>${s.t}</p></div><button data-i="${i}" title="Remove">&times;</button></div>`).join(""):`<p class="empty">Saved prompts will collect here and sync across your devices.</p>`;
+ document.querySelectorAll(".item button").forEach(b=>b.onclick=()=>{saved.splice(+b.dataset.i,1);SV('saved',saved);renderList();});}
+function renderPlan(){const el=$("plan");const short=d=>{const p=plan[d];return `${p.creature} ${p.place}, ${p.light}`};
+ if(view==="grid"){const off=new Date(2026,9,1).getDay();let h=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map(x=>`<div class="dow">${x}</div>`).join("")+'<div class="blank cell"></div>'.repeat(off);
+  h+=WORDS.map((w,i)=>`<div class="cell ${i===day?'on':''}" data-i="${i}"><div class="n">${i+1}<b>${w}</b></div>${short(i)}${kept[i]?' ·':''}</div>`).join("");el.className="cal";el.innerHTML=h;}
+ else{el.className="plist";el.innerHTML=WORDS.map((w,i)=>`<div class="item ${i===day?'on':''}" data-i="${i}"><div><small>Oct ${i+1} · ${w}${kept[i]?' · kept':''}</small><p>${sentence(i)}</p></div><button data-r="${i}" title="Reroll this day">&#8635;</button></div>`).join("");}
+ el.querySelectorAll("[data-i]").forEach(c=>c.onclick=e=>{if(e.target.dataset.r!==undefined){plan[+e.target.dataset.r]=fresh();render();return;}day=+c.dataset.i;renderDays();render();window.scrollTo({top:$("days").offsetTop,behavior:"smooth"});});}
+document.querySelectorAll(".vt").forEach(t=>t.onclick=()=>{view=t.dataset.v;RAW('view',view);document.querySelectorAll(".vt").forEach(x=>x.classList.toggle("on",x===t));renderPlan();});
+$("rollall").onclick=()=>{plan=plan.map((p,i)=>kept[i]?p:fresh());render();toast("Month rerolled, kept days untouched");};
+$("copyall").onclick=()=>{navigator.clipboard?.writeText("INKTOBER 2026 PLAN\n\n"+WORDS.map((w,i)=>plain(i)).join("\n\n"));toast("Full plan copied");};
+$("print").onclick=()=>{$("printarea").innerHTML="<h1>Inktober 2026 Plan</h1>"+WORDS.map((w,i)=>`<div class="pr"><strong>Oct ${i+1} · ${w.toUpperCase()}</strong>${sentence(i).replace(/<[^>]+>/g,"")}</div>`).join("");window.print();};
+$("reset").onclick=()=>{if(confirm("Clear all planned days and start fresh?")){plan=WORDS.map(fresh);kept={};render();}};
+const enc=()=>btoa(unescape(encodeURIComponent(JSON.stringify({plan,kept,saved}))));
+function load(c){try{const o=JSON.parse(decodeURIComponent(escape(atob(c.trim()))));if(!Array.isArray(o.plan)||o.plan.length!==31)throw 0;plan=o.plan;kept=o.kept||{};saved=o.saved||[];SV('saved',saved);render();renderList();toast("Plan loaded");}catch(e){toast("That code did not work")}}
+
+$("copycode").onclick=()=>{navigator.clipboard?.writeText(enc());toast("Sync code copied");};
+$("copylink").onclick=()=>{navigator.clipboard?.writeText(location.href.split("#")[0]+"#sync="+enc());toast("Sync link copied");};
+$("loadcode").onclick=()=>{if(confirm("Replace this device's plan with the pasted one?"))load($("synccode").value);};
+const GF="inktober-quick-2026.json",API="https://api.github.com";
+let ghTok=LS('ghtok'),ghId=LS('ghid'),ghTimer=null,ghReady=false;
+function stat(m){$("ghstat").textContent=m?"GitHub: "+m:"";$("dot").classList.toggle("on",!!ghTok)}
+const H=()=>({Authorization:"token "+ghTok,Accept:"application/vnd.github+json","Content-Type":"application/json"});
+async function ghFind(){if(ghId)return ghId;for(let p=1;p<6;p++){const r=await fetch(`${API}/gists?per_page=100&page=${p}`,{headers:H()});if(!r.ok)throw new Error(r.status);const a=await r.json();const g=a.find(x=>x.files&&x.files[GF]);if(g){ghId=g.id;RAW('ghid',ghId);return ghId}if(a.length<100)break}return null}
+async function ghRead(){const id=await ghFind();if(!id)return null;const r=await fetch(`${API}/gists/${id}`,{headers:H(),cache:"no-store"});if(r.status===404){ghId=null;RAW('ghid',null);return null}if(!r.ok)throw new Error(r.status);const f=(await r.json()).files[GF];let t=f.content;if(f.truncated)t=await (await fetch(f.raw_url)).text();return JSON.parse(t)}
+function merge(rm){if(!rm)return;const seen=new Set(saved.map(x=>x.d+"|"+x.t));(rm.saved||[]).forEach(x=>{if(!seen.has(x.d+"|"+x.t))saved.push(x)});if((rm.updated||0)>(LS('localupd')||0)&&Array.isArray(rm.plan)){plan=rm.plan;kept=rm.kept||{}}}
+function renderQuiet(){muted=true;RAW('saved',saved);render();renderList();renderDays();muted=false}
+async function ghPush(){if(!ghTok)return;stat("saving…");try{const rm=await ghRead();if(rm&&(rm.updated||0)>(LS('lastsync')||0)){merge(rm);renderQuiet()}
+ const body={plan,kept,saved,updated:Date.now()},content=JSON.stringify(body);let r;
+ if(ghId)r=await fetch(`${API}/gists/${ghId}`,{method:"PATCH",headers:H(),body:JSON.stringify({files:{[GF]:{content}}})});
+ else{r=await fetch(`${API}/gists`,{method:"POST",headers:H(),body:JSON.stringify({description:"Inktober Quick 2026 plan and sketchbook",public:false,files:{[GF]:{content}}})});if(r.ok){ghId=(await r.clone().json()).id;RAW('ghid',ghId)}}
+ if(!r.ok)throw new Error(r.status);RAW('lastsync',body.updated);RAW('localupd',body.updated);stat("saved");}catch(e){stat(e.message==="401"?"token rejected":"offline, will retry")}}
+async function ghPull(){if(!ghTok)return;stat("loading…");try{const rm=await ghRead();if(rm){merge(rm);RAW('lastsync',rm.updated||0);renderQuiet();stat("up to date")}else await ghPush()}catch(e){stat(e.message==="401"?"token rejected":"offline")}ghReady=true}
+function queue(){if(!ghTok||!ghReady)return;clearTimeout(ghTimer);stat("unsaved changes");ghTimer=setTimeout(ghPush,2000)}
+const openD=o=>{$("drawer").classList.toggle("open",o);$("scrim").classList.toggle("open",o);if(o){$("ghtok").value=ghTok||"";$("synccode").value=enc();}};
+$("gear").onclick=()=>openD(true);$("dclose").onclick=$("scrim").onclick=()=>openD(false);document.addEventListener("keydown",e=>{if(e.key==="Escape")openD(false)});
+$("ghconnect").onclick=async()=>{const t=$("ghtok").value.trim();if(!t)return;ghTok=t;RAW('ghtok',t);ghId=null;RAW('ghid',null);await ghPull();toast("Connected to GitHub");};
+$("ghnow").onclick=async()=>{await ghPull();await ghPush();};
+$("ghoff").onclick=()=>{ghTok=null;ghId=null;RAW('ghtok',null);RAW('ghid',null);stat("");toast("Disconnected on this device");};
+window.addEventListener("online",queue);
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&ghTok&&ghReady)ghPull()});
+view=LS('view')||"grid";document.querySelectorAll(".vt").forEach(x=>x.classList.toggle("on",x.dataset.v===view));
+if(location.hash.startsWith("#sync=")){const c=location.hash.slice(6);history.replaceState(null,"",location.pathname+location.search);if(confirm("Load the synced Inktober plan onto this device?"))load(c);}
+muted=true;renderDays();pickers();render();renderList();muted=false;stat("");
+if(ghTok)ghPull();else ghReady=true;
+</script></body></html>
