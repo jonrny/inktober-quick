@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Inktober 2026 Inspiration Generator</title>
+<title>Inktober Quick: 30-45 minute prompts</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;1,9..144,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0b0a09;--panel:#151311;--panel2:#1d1a17;--line:#2c2723;--ink:#ece6dc;--mute:#9a9087;--faint:#645c55;--accent:#e0572e;--accent2:#f2a65a;--r:14px}
@@ -76,17 +76,28 @@ footer{text-align:center;color:var(--faint);font-size:12px;margin-top:48px}
 #printarea .pr{border-bottom:1px solid #ccc;padding:6px 0;font-size:12px;break-inside:avoid}
 #printarea .pr strong{display:inline-block;width:150px}
 @media print{body{background:#fff;color:#000}.wrap>*:not(#printarea){display:none!important}#printarea{display:block!important}}
+.gear{position:fixed;top:16px;right:16px;z-index:20;width:44px;height:44px;border-radius:50%;background:var(--panel);border:1px solid var(--line);color:var(--mute);font-size:20px;cursor:pointer}
+.gear:hover{color:var(--ink);border-color:var(--faint)}
+.dot{position:absolute;top:8px;right:8px;width:8px;height:8px;border-radius:50%;background:transparent}.dot.on{background:#5fbf7a}
+.scrim{position:fixed;inset:0;background:#0008;opacity:0;pointer-events:none;transition:.25s;z-index:29}.scrim.open{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;height:100%;width:min(420px,92vw);background:var(--bg);border-left:1px solid var(--line);padding:24px;overflow:auto;transform:translateX(100%);transition:transform .3s ease;z-index:30}
+.drawer.open{transform:none}.dhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.dhead h2{font-family:Fraunces,serif;font-size:22px}.x{background:none;border:0;color:var(--mute);font-size:28px;cursor:pointer}
 @media(max-width:600px){.card{padding:24px}}
-</style></head><body><div class="wrap">
-<header><div class="kicker">Official 2026 prompt list</div><h1>Ink<em>tober</em> Muse</h1><p class="sub">Pick a day, roll the dice, and build a drawing brief from the daily word plus a creature, a place, and the light and weather around it.</p></header>
-<div class="topbar"><button class="btn primary" id="gh">Sync with GitHub</button><button class="btn" id="sync">Sync code</button><span class="ghstat" id="ghstat"></span></div>
-<div id="ghbox" class="field hidden" style="margin-top:14px"><label>GitHub sync</label>
+</style></head><body><div class="wrap"><button class="gear" id="gear" title="Sync settings">&#9881;<span class="dot" id="dot"></span></button>
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer"><div class="dhead"><h2>Sync and backup</h2><button class="x" id="dclose">&times;</button></div>
+<p class="ghstat" id="ghstat" style="margin-bottom:12px"></p><span id="gh" hidden></span><span id="sync" hidden></span>
+<div id="ghbox" class="field" style="margin-top:14px"><label>GitHub sync</label>
 <p class="note" style="margin:0 0 8px">Paste a GitHub classic token with only the "gist" permission (GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)). It stays in this browser only. Use the same token on each device; changes then save automatically.</p>
 <input id="ghtok" class="inp" type="password" placeholder="ghp_...">
 <div class="actions" style="margin-top:10px"><button class="btn primary" id="ghconnect">Connect</button><button class="btn" id="ghnow">Sync now</button><button class="btn" id="ghoff">Disconnect this device</button></div></div>
-<div id="syncbox" class="field hidden" style="margin-top:14px"><label>Sync code (manual backup)</label>
+<div id="syncbox" class="field" style="margin-top:14px"><label>Sync code (manual backup)</label>
 <textarea id="synccode" class="inp" rows="3"></textarea>
 <div class="actions" style="margin-top:10px"><button class="btn" id="copycode">Copy code</button><button class="btn" id="copylink">Copy sync link</button><button class="btn" id="loadcode">Load pasted code</button></div></div>
+</aside>
+
+<header><div class="kicker">30 to 45 minute sketches</div><h1>Ink<em>tober</em> Quick</h1><p class="sub">Simple prompts you can finish in 30 to 45 minutes. One word, one creature, one place, one mood of light, and a reminder to keep it simple.</p></header>
 <div class="days" id="days"></div>
 <section class="card">
  <div class="daylabel" id="daylabel"></div>
@@ -108,25 +119,22 @@ footer{text-align:center;color:var(--faint);font-size:12px;margin-top:48px}
 <p class="note" style="margin:-6px 0 14px">Click any day to open and fine-tune it above. Days you have generated or edited are kept when you reroll the month.</p>
 <div id="plan"></div></section>
 <section class="saved"><h2>Sketchbook</h2><div id="list"></div></section>
-<div id="printarea"></div><footer>Prompt words from the official Inktober 2026 list. Made for inking, not for rules.</footer>
+<div id="printarea"></div><footer>Prompt words from the official Inktober 2026 list. Quick version, made for finishing.</footer>
 </div><div class="toast" id="toast"></div>
 <script>
 const WORDS=["Apple","Relic","Miniature","Cactus","Smack","Ogre","Panic","Stinky","Ram","Mystical","Rescue","Toss","Flimsy","Lady","Hooray","Gangly","Contraption","Flightless","Confused","Lounge","Hero","Beacon","Dapper","Bake","Fracture","Zip","Dumb","Trophy","Tusk","Cookie","Flex"];
 const CAT={
-creature:{label:"Creature",items:["a tabby cat","a scruffy terrier","a barn owl","an axolotl","a hedgehog","a red fox","a raccoon","a moth","a toad","a goldfish","a crow","a snail","a mountain goat","a capybara","a chameleon","a pangolin","a hermit crab","a bat","a corgi","an octopus","a pug","a rabbit","a tortoise","a sloth","a mantis","a jellyfish","a flamingo","a badger","a ferret","a lobster","a walrus","a hamster"]},
-place:{label:"Location",items:["drifting in deep space","in a sun-bleached desert","inside an abandoned lighthouse","in a sunken ship","on a crowded night market street","in a mossy forest ruin","on a floating island","in a cluttered antique shop","at the bottom of a teacup","in a frozen tundra","in a victorian greenhouse","on a rooftop above the city","inside a clockwork tower","in a candlelit library","in a swamp at the edge of town","on the surface of the moon","in a roadside diner","inside a giant's pocket","in a haunted bakery","on a mountain pass","in a coral reef","in a dusty attic","at a carnival after closing","in a cave of crystals"]},
-light:{label:"Time and light",items:["long shadows","golden hour glow","harsh noon light","blue hour dusk","moonlight only","a single candle","backlit silhouette","flickering lantern light","dappled light through leaves","neon glow","first light of dawn","eclipse darkness","firelight from below","a spotlight from above"]},
-weather:{label:"Atmosphere",items:["wet and dripping","thick fog","clouds rolling in","heavy snowfall","dust storm","drizzle on everything","steam rising","windswept","still and silent air","falling leaves","storm about to break","humid and heavy","ash drifting down","sparkling frost"]},
-mood:{label:"Mood",items:["whimsical","eerie","cozy","epic","melancholy","absurd","tense","triumphant","dreamy","sinister","tender","chaotic"]},
-tech:{label:"Ink approach",items:["crosshatching","stippling","bold brush strokes","a single continuous line","heavy spot blacks","ink wash gradients","negative space","a limited two-tone palette","tiny detailed linework","woodcut-style marks"]},
-comp:{label:"Composition",items:["a worm's-eye view","a bird's-eye view","an extreme close-up","a tiny figure in a vast scene","a comic panel sequence","a centered symmetrical portrait","a dramatic diagonal","a vignette frame","a cutaway view","an over-the-shoulder shot"]}
+creature:{label:"Creature",items:["a cat","a dog","an owl","a frog","a fish","a crow","a snail","a mouse","a rabbit","a turtle","a bird","a bug","a bat","a pig","a duck","a bear"]},
+place:{label:"Place",items:["in the desert","in space","in a forest","on a rooftop","at the beach","in a kitchen","under the sea","on a hill","in a cave","in the snow","in a garden","on the moon"]},
+light:{label:"Light or weather",items:["long shadows","at night","in the rain","on a sunny day","in the fog","at sunset","in the wind","by candlelight"]},
+tech:{label:"Keep it simple",items:["bold outlines","one pen only","simple shapes","lots of black fill","clean lines, little detail","a quick loose sketch","three values: white, gray, black","a small drawing with white space"]}
 };
 const KEYS=Object.keys(CAT);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 const now=new Date();const todayIdx=now.getMonth()===9?now.getDate()-1:null;
 let day=todayIdx??0, locks={}, manual={}, view="grid", muted=false;
-const LS=k=>{try{return JSON.parse(localStorage.getItem('inkmuse-'+k))}catch(e){return null}};
-const RAW=(k,v)=>{try{localStorage.setItem('inkmuse-'+k,JSON.stringify(v))}catch(e){}};
+const LS=k=>{try{return JSON.parse(localStorage.getItem('inkquick-'+k))}catch(e){return null}};
+const RAW=(k,v)=>{try{localStorage.setItem('inkquick-'+k,JSON.stringify(v))}catch(e){}};
 const SV=(k,v)=>{RAW(k,v);if(!muted&&['plan','kept','saved'].includes(k)){RAW('localupd',Date.now());queue()}};
 const fresh=()=>{const o={};KEYS.forEach(k=>o[k]=pick(CAT[k].items));return o};
 let plan=LS('plan')||WORDS.map(fresh), kept=LS('kept')||{}, saved=LS('saved')||[], deleted=LS('deleted')||[];
@@ -136,8 +144,7 @@ const $=id=>document.getElementById(id);
 function renderDays(){ $("days").innerHTML=WORDS.map((w,i)=>`<button class="day ${i===day?'on':''} ${i===todayIdx?'today':''}" data-i="${i}"><small>Day ${i+1}</small><span>${w}</span></button>`).join("");
  document.querySelectorAll(".day").forEach(b=>b.onclick=()=>{day=+b.dataset.i;renderDays();render();});}
 function roll(only){ state=plan[day]; kept[day]=true; KEYS.forEach(k=>{ if(only&&k!==only)return; if(!only&&locks[k])return; state[k]=manual[k]!=="random"&&!only?manual[k]:pick(CAT[k].items);}); render(); }
-function sentence(d=day){const s=plan[d],w=WORDS[d];const art=/^[aeiou]/i.test(s.mood)?"An":"A";
- return `${art} <i>${s.mood}</i> take on <b>${w.toUpperCase()}</b> featuring ${s.creature.replace(/^a (?=[aeiou])/i,"an ")} ${s.place}, under ${s.light}, ${s.weather}. Draw it as ${s.comp.replace(/^a (?=[aeiou])/i,"an ")}, using ${s.tech}.`;}
+function sentence(d=day){const p=plan[d],w=WORDS[d];return `<b>${w.toUpperCase()}</b> with ${p.creature} ${p.place}, ${p.light}. <i>Keep it simple:</i> ${p.tech}.`;}
 function plain(d=day){return `Day ${d+1} (Oct ${d+1}): `+sentence(d).replace(/<[^>]+>/g,"");}
 function render(){ state=plan[day]; SV('plan',plan);SV('kept',kept); renderPlan(); $("daylabel").textContent=`Day ${day+1} of 31 · ${WORDS[day]}`; const p=$("prompt");p.style.opacity=0;setTimeout(()=>{p.innerHTML=sentence();p.style.opacity=1},120);
  $("chips").innerHTML=KEYS.map(k=>`<div class="chip ${locks[k]?'locked':''}"><span class="k">${CAT[k].label}</span>${state[k]}<button class="lk" data-k="${k}" title="Lock">${locks[k]?'&#128274;':'&#128275;'}</button><button class="rr" data-k="${k}" title="Reroll">&#8635;</button></div>`).join("");
@@ -169,13 +176,13 @@ $("print").onclick=()=>{$("printarea").innerHTML="<h1>Inktober 2026 Plan</h1>"+W
 $("reset").onclick=()=>{if(confirm("Clear all planned days and start fresh?")){plan=WORDS.map(fresh);kept={};render();}};
 const enc=()=>btoa(unescape(encodeURIComponent(JSON.stringify({plan,kept,saved}))));
 function load(c){try{const o=JSON.parse(decodeURIComponent(escape(atob(c.trim()))));if(!Array.isArray(o.plan)||o.plan.length!==31)throw 0;plan=o.plan;kept=o.kept||{};saved=o.saved||[];SV('saved',saved);render();renderList();toast("Plan loaded");}catch(e){toast("That code did not work")}}
-$("sync").onclick=()=>{$("syncbox").classList.toggle("hidden");$("synccode").value=enc();};
+
 $("copycode").onclick=()=>{navigator.clipboard?.writeText(enc());toast("Sync code copied");};
 $("copylink").onclick=()=>{navigator.clipboard?.writeText(location.href.split("#")[0]+"#sync="+enc());toast("Sync link copied");};
 $("loadcode").onclick=()=>{if(confirm("Replace this device's plan with the pasted one?"))load($("synccode").value);};
-const GF="inktober-muse-2026.json",API="https://api.github.com";
+const GF="inktober-quick-2026.json",API="https://api.github.com";
 let ghTok=LS('ghtok'),ghId=LS('ghid'),ghTimer=null,ghReady=false;
-function stat(m){$("ghstat").textContent=m?"GitHub: "+m:"";$("gh").textContent=ghTok?"GitHub sync on":"Sync with GitHub"}
+function stat(m){$("ghstat").textContent=m?"GitHub: "+m:"";$("dot").classList.toggle("on",!!ghTok)}
 const H=()=>({Authorization:"token "+ghTok,Accept:"application/vnd.github+json","Content-Type":"application/json"});
 async function ghFind(){if(ghId)return ghId;for(let p=1;p<6;p++){const r=await fetch(`${API}/gists?per_page=100&page=${p}`,{headers:H()});if(!r.ok)throw new Error(r.status);const a=await r.json();const g=a.find(x=>x.files&&x.files[GF]);if(g){ghId=g.id;RAW('ghid',ghId);return ghId}if(a.length<100)break}return null}
 async function ghRead(){const id=await ghFind();if(!id)return null;const r=await fetch(`${API}/gists/${id}`,{headers:H(),cache:"no-store"});if(r.status===404){ghId=null;RAW('ghid',null);return null}if(!r.ok)throw new Error(r.status);const f=(await r.json()).files[GF];let t=f.content;if(f.truncated)t=await (await fetch(f.raw_url)).text();return JSON.parse(t)}
@@ -184,11 +191,12 @@ function renderQuiet(){muted=true;RAW('saved',saved);render();renderList();rende
 async function ghPush(){if(!ghTok)return;stat("saving…");try{const rm=await ghRead();if(rm&&(rm.updated||0)>(LS('lastsync')||0)){merge(rm);renderQuiet()}
  const body={plan,kept,saved,deleted,updated:Date.now()},content=JSON.stringify(body);let r;
  if(ghId)r=await fetch(`${API}/gists/${ghId}`,{method:"PATCH",headers:H(),body:JSON.stringify({files:{[GF]:{content}}})});
- else{r=await fetch(`${API}/gists`,{method:"POST",headers:H(),body:JSON.stringify({description:"Inktober Muse 2026 plan and sketchbook",public:false,files:{[GF]:{content}}})});if(r.ok){ghId=(await r.clone().json()).id;RAW('ghid',ghId)}}
+ else{r=await fetch(`${API}/gists`,{method:"POST",headers:H(),body:JSON.stringify({description:"Inktober Quick 2026 plan and sketchbook",public:false,files:{[GF]:{content}}})});if(r.ok){ghId=(await r.clone().json()).id;RAW('ghid',ghId)}}
  if(!r.ok)throw new Error(r.status);RAW('lastsync',body.updated);RAW('localupd',body.updated);stat("saved");}catch(e){stat(e.message==="401"?"token rejected":"offline, will retry")}}
 async function ghPull(){if(!ghTok)return;stat("loading…");try{const rm=await ghRead();if(rm){merge(rm);RAW('lastsync',rm.updated||0);renderQuiet();stat("up to date")}else await ghPush()}catch(e){stat(e.message==="401"?"token rejected":"offline")}ghReady=true}
 function queue(){if(!ghTok||!ghReady)return;clearTimeout(ghTimer);stat("unsaved changes");ghTimer=setTimeout(ghPush,2000)}
-$("gh").onclick=()=>{$("ghbox").classList.toggle("hidden");$("ghtok").value=ghTok||"";};
+const openD=o=>{$("drawer").classList.toggle("open",o);$("scrim").classList.toggle("open",o);if(o){$("ghtok").value=ghTok||"";$("synccode").value=enc();}};
+$("gear").onclick=()=>openD(true);$("dclose").onclick=$("scrim").onclick=()=>openD(false);document.addEventListener("keydown",e=>{if(e.key==="Escape")openD(false)});
 $("ghconnect").onclick=async()=>{const t=$("ghtok").value.trim();if(!t)return;ghTok=t;RAW('ghtok',t);ghId=null;RAW('ghid',null);await ghPull();toast("Connected to GitHub");};
 $("ghnow").onclick=async()=>{await ghPull();await ghPush();};
 $("ghoff").onclick=()=>{ghTok=null;ghId=null;RAW('ghtok',null);RAW('ghid',null);stat("");toast("Disconnected on this device");};
